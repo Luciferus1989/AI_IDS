@@ -46,7 +46,7 @@ import csv
 # ]
 
 
-def open_csv_file(file_name):
+def open_csv_file(file_name, label):
     with open(file_name, 'r') as file:
         reader = csv.reader(file, delimiter=',')
         header = next(reader)
@@ -55,7 +55,7 @@ def open_csv_file(file_name):
     data.columns = ([data.columns[0]] +
                     [column.split('\\')[-2] +
                      '|' + column.split('\\')[-1].replace('% ', '') for column in data.columns[1:]])
-
+    data[label] = label
     return data
 
 
@@ -67,9 +67,9 @@ def combine_normal():
               ('Dataset_Iot/Normal/win10_normal_2.csv', 'normal'),
               ('Dataset_Iot/Normal/win10_normal_3.csv', 'normal'),
               ('Dataset_Iot/Normal/win10_normal_4.csv', 'normal')]
-    df = [open_csv_file(os.path.join(current_directory, file)) for file, _ in normal]
-
-    return pd.concat(df, ignore_index=True)
+    df = [open_csv_file(os.path.join(current_directory, file), _) for file, _ in normal]
+    normal = pd.concat(df, ignore_index=True)
+    return normal
 
 
 def combine_attack():
@@ -96,8 +96,8 @@ def combine_attack():
     xss = [('Dataset_Iot/XSS/win7_XSS_normal_1.csv', 'xss'),
            ('Dataset_Iot/XSS/win10_XSS_normal_1.csv', 'xss')]
     # for base in [backdoor, ddos, dos, infection, mitm, password, runsomware, scanning, xss]:
-    df = [open_csv_file(os.path.join(current_directory, file))
-          for base in [backdoor, ddos, dos, infection, mitm, password, runsomware, scanning, xss] for file, _ in base]
+    df = [open_csv_file(os.path.join(current_directory, file), label)
+          for base in [backdoor, ddos, dos, infection, mitm, password, runsomware, scanning, xss] for file, label in base]
 
     return pd.concat(df, ignore_index=True)
 
