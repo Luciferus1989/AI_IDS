@@ -2,19 +2,19 @@ import os
 from openread import open_csv_file, combine_normal, combine_attack
 import pandas as pd
 
-if os.path.isfile('normal.cvs'):
-    print('Fail {} is founded in dir.'.format('normal.cvs'))
-    df_normal = pd.read_csv('normal.cvs.csv')
+if os.path.isfile('normal.csv'):
+    print('Fail {} is founded in dir.'.format('normal.csv'))
+    df_normal = pd.read_csv('normal.csv')
 else:
     df_normal = combine_normal()
-    df_normal.to_csv('normal.cvs')
+    df_normal.to_csv('normal.csv')
 
-if os.path.isfile('attack.cvs'):
-    print('Fail {} is founded in dir.'.format('attack.cvs'))
-    df_attack = pd.read_csv('attack.cvs')
+if os.path.isfile('attack.csv'):
+    print('Fail {} is founded in dir.'.format('attack.csv'))
+    df_attack = pd.read_csv('attack.csv')
 else:
     df_attack = combine_attack()
-    df_attack.to_csv('attack.cvs')
+    df_attack.to_csv('attack.csv')
 
 
 
