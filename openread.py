@@ -1,4 +1,3 @@
-import json
 import pandas as pd
 import os
 import csv
@@ -20,6 +19,7 @@ def open_csv_file(file_name, label):
                     [column.split('\\')[-2] +
                      '|' + column.split('\\')[-1].replace('% ', '') for column in data.columns[1:]])
     data['Label'] = label
+
     return data
 
 
@@ -107,7 +107,7 @@ def clean_na(df):
 
 def common_type(df):
     """
-    Converts each column to a common data type in the column.
+    Converts each column to a common data type in the column and change '', ' ' to 0.
     :param df: Input DataFrame.
     :return: DataFrame.
     """
@@ -116,9 +116,10 @@ def common_type(df):
         if main_data_type == int or main_data_type == float:
             df[i] = df[i].astype(float)
         else:
-            df[i] = df[i].astype(main_data_type)
             df.replace('', pd.NA, inplace=True)
             df.fillna(0, inplace=True)
             df.replace(' ', pd.NA, inplace=True)
             df.fillna(0, inplace=True)
+            df[i] = df[i].astype(main_data_type)
+
     return df

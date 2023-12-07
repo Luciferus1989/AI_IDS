@@ -21,11 +21,11 @@ else:
         df_attack.to_csv('attack.csv', index=False)
     df = pd.concat([df_normal, df_attack], ignore_index=True)
     print(df.shape)
-    df = clean_null_rows(df)
+    # df = clean_null_rows(df)
     df = common_type(df)
     print(df.shape)
     df.to_csv('df.csv', index=False)
-
+df = df.drop(df.columns[0], axis=1)
 cnn = CNN(df)
 cnn.train()
 
