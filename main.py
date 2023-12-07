@@ -27,5 +27,5 @@ else:
     df.to_csv('df.csv', index=False)
 df = df.drop(df.columns[0], axis=1)
 cnn = CNN(df)
-cnn.train()
+cnn.train(10, 24)
 

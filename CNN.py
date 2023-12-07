@@ -30,7 +30,7 @@ class CNN:
         self.X = self.df.drop(columns=['Label'])
         self.trained_model = None
 
-    def train(self):
+    def train(self, epochs, batch_size):
         """
         Trains the CNN model.
         :return: None for now.
@@ -61,7 +61,7 @@ class CNN:
 
         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-        model.fit(X_train, y_train_one_hot, epochs=10, batch_size=64, validation_data=(X_test, y_test_one_hot))
+        model.fit(X_train, y_train_one_hot, epochs=epochs, batch_size=batch_size, validation_data=(X_test, y_test_one_hot))
         loss, accuracy = model.evaluate(X_test, y_test_one_hot)
         print(f'Test Loss: {loss}, Test Accuracy: {accuracy}')
 
