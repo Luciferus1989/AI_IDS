@@ -5,6 +5,12 @@ import csv
 
 
 def open_csv_file(file_name, label):
+    """
+    Opens a CSV file, adjusts column names, adds a 'Label' column, and returns a DataFrame.
+    :param file_name: Path to the CSV file locally
+    :param label: Label to be assigned to the 'Label' column.
+    :return: pd.DataFrame: DataFrame containing data from the CSV file.
+    """
     with open(file_name, 'r') as file:
         reader = csv.reader(file, delimiter=',')
         header = next(reader)
@@ -14,12 +20,14 @@ def open_csv_file(file_name, label):
                     [column.split('\\')[-2] +
                      '|' + column.split('\\')[-1].replace('% ', '') for column in data.columns[1:]])
     data['Label'] = label
-    if 'Label' in data.columns:
-        print(label)
     return data
 
 
 def combine_normal():
+    """
+    Combine normal dataset
+    :return: Combined DataFrame containing normal data.
+    """
     current_directory = os.path.dirname(os.path.abspath(__file__))
     normal = [('Dataset_Iot/Normal/win7_normal_2.csv', 'normal'),
               ('Dataset_Iot/Normal/win7_normal_3.csv', 'normal'),
@@ -33,6 +41,10 @@ def combine_normal():
 
 
 def combine_attack():
+    """
+    Combine dataset with attacks
+    :return: Combined DataFrame containing attacks data.
+    """
     current_directory = os.path.dirname(os.path.abspath(__file__))
     backdoor = [('Dataset_Iot/Backdoor/win7_backdoor_normal_1.csv', 'backdoor'),
                 ('Dataset_Iot/Backdoor/win7_backdoor_normal_2.csv', 'backdoor')]
@@ -58,11 +70,16 @@ def combine_attack():
     df = [open_csv_file(os.path.join(current_directory, file), label)
           for base in [backdoor, ddos, dos, infection, mitm, password, runsomware, scanning, xss]
           for file, label in base]
-
     return pd.concat(df, ignore_index=True)
 
 
 def clean_null_rows(df):
+    """
+    Cleans rows with null values in a DataFrame.
+    :param df: Input DataFrame.
+    :return: Cleaned DataFrame without rows where sum of null values is lower than average.
+    """
+    df = df.drop(df.columns[0], axis=1)
     count_null_values = df.isnull().sum(axis=1)
     df = pd.concat([df, count_null_values.rename('sum of null')], axis=1)
     # df['sum of null'] = count_null_values
@@ -76,6 +93,11 @@ def clean_null_rows(df):
 
 
 def clean_na(df):
+    """
+    Replace NA values in a DataFrame.
+    :param df: Input DataFrame.
+    :return: DataFrame with cleaned NA values.
+    """
     df.replace('', pd.NA, inplace=True)
     df.fillna(0, inplace=True)
     df.replace(' ', pd.NA, inplace=True)
@@ -84,6 +106,11 @@ def clean_na(df):
 
 
 def common_type(df):
+    """
+    Converts each column to a common data type in the column.
+    :param df: Input DataFrame.
+    :return: DataFrame.
+    """
     for i in df.columns:
         main_data_type = df[i].apply(type).mode().iloc[0]
         if main_data_type == int or main_data_type == float:
