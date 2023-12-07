@@ -1,25 +1,52 @@
 import os
-from openread import open_csv_file, combine_normal, combine_attack
+from openread import open_csv_file, combine_normal, combine_attack, clean_null_rows, clean_na, common_type
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 if os.path.isfile('normal.csv'):
     print('Fail {} is founded in dir.'.format('normal.csv'))
-    df_normal = pd.read_csv('normal.csv')
+    df_normal = pd.read_csv('normal.csv', low_memory=False)
 else:
     df_normal = combine_normal()
-    df_normal.to_csv('normal.csv')
+    df_normal.to_csv('normal.csv', index=False)
 
 if os.path.isfile('attack.csv'):
     print('Fail {} is founded in dir.'.format('attack.csv'))
-    df_attack = pd.read_csv('attack.csv')
+    df_attack = pd.read_csv('attack.csv', low_memory=False)
 else:
     df_attack = combine_attack()
-    df_attack.to_csv('attack.csv')
+    df_attack.to_csv('attack.csv', index=False)
 
 
+df = pd.concat([df_normal, df_attack], ignore_index=True)
+print(df.shape)
+df = clean_null_rows(df)
+df = common_type(df)
+print(df.shape)
+
+# for i in df_normal.columns:
+#     same_data_type = df_normal[i].apply(type).nunique() == 1
+#     if not same_data_type:
+#         count += 1
+#         print("{}  There is value with diff type".format(i))
+#     else:
+#         continue
 
 
+for i in df.columns:
+    main_data_type = df[i].apply(type).mode().iloc[0]
 
+    different_data_rows = df[df[i].apply(type) != main_data_type]
+
+    if not different_data_rows.empty:
+        print(f"Column: {i}")
+        print(f"  Main Data Type: {main_data_type}")
+        print(f"  Rows with Different Data Type: {len(different_data_rows)}")
+
+        sample_values = different_data_rows[i].head(5).tolist()
+        print(f"  Sample Values: {sample_values}")
+        print("\n")
 
 
 # X, y = load_and_preprocess_data()
