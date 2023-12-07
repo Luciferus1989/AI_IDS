@@ -4,6 +4,10 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from sklearn.preprocessing import LabelEncoder, StandardScaler
+import logging
+
+
+logging.basicConfig(level=logging.INFO)
 
 
 class CNN:
@@ -63,7 +67,7 @@ class CNN:
 
         model.fit(X_train, y_train_one_hot, epochs=epochs, batch_size=batch_size, validation_data=(X_test, y_test_one_hot))
         loss, accuracy = model.evaluate(X_test, y_test_one_hot)
-        print(f'Test Loss: {loss}, Test Accuracy: {accuracy}')
+        logging.info(f'Test Loss: {loss}, Test Accuracy: {accuracy}')
 
         self.trained_model = model
 
@@ -72,16 +76,17 @@ class CNN:
         predictions = np.argmax(predictions_prob, axis=1)
         predicted_labels = label_encoder.inverse_transform(predictions)
         accuracy = np.mean(predictions == y_test)
-        print(f'Test Accuracy: {accuracy}')
+        logging.info(f'Test Accuracy: {accuracy}')
 
         loss, accuracy = model.evaluate(X_test, y_test_one_hot)
-        print(f'Test Accuracy (using evaluate): {accuracy}')
+        logging.info(f'Test Accuracy (using evaluate): {accuracy}')
 
         for i in range(10):
             actual_label = label_encoder.inverse_transform([y_test[i]])[0]
             predicted_label = predicted_labels[i]
             probabilities = predictions_prob[i]
 
-            print(f'Actual: {actual_label}, Predicted: {predicted_label}')
+            logging.info(f'Actual: {actual_label}, Predicted: {predicted_label}')
+
 
 
