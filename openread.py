@@ -1,8 +1,3 @@
-import pandas as pd
-import os
-import csv
-
-
 def open_csv_file(file_name, label):
     """
     Opens a CSV file, adjusts column names, adds a 'Label' column, and returns a DataFrame.
@@ -22,6 +17,17 @@ def open_csv_file(file_name, label):
 
     return data
 
+def combine_data_from_files(file_label_tuples):
+    """
+    Combines data from a list of file label tuples..
+    :param file_label_tuples: List of tuples containing file paths and labels.
+    :return: Combined DataFrame containing data from files.
+    """
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    data_frames = [open_csv_file(os.path.join(current_directory, file), label) for file, label in file_label_tuples]
+    combined_df = pd.concat(data_frames, ignore_index=True)
+    return combined_df
+
 
 def combine_normal():
     """
@@ -29,15 +35,13 @@ def combine_normal():
     :return: Combined DataFrame containing normal data.
     """
     current_directory = os.path.dirname(os.path.abspath(__file__))
-    normal = [('Dataset_Iot/Normal/win7_normal_2.csv', 'normal'),
+    normal_files = [('Dataset_Iot/Normal/win7_normal_2.csv', 'normal'),
               ('Dataset_Iot/Normal/win7_normal_3.csv', 'normal'),
               ('Dataset_Iot/Normal/win10_normal_1.csv', 'normal'),
               ('Dataset_Iot/Normal/win10_normal_2.csv', 'normal'),
               ('Dataset_Iot/Normal/win10_normal_3.csv', 'normal'),
               ('Dataset_Iot/Normal/win10_normal_4.csv', 'normal')]
-    df = [open_csv_file(os.path.join(current_directory, file), label) for file, label in normal]
-    normal = pd.concat(df, ignore_index=True)
-    return normal
+    return combine_data_from_files(normal_files)
 
 
 def combine_attack():
@@ -45,32 +49,29 @@ def combine_attack():
     Combine dataset with attacks
     :return: Combined DataFrame containing attacks data.
     """
-    current_directory = os.path.dirname(os.path.abspath(__file__))
-    backdoor = [('Dataset_Iot/Backdoor/win7_backdoor_normal_1.csv', 'backdoor'),
-                ('Dataset_Iot/Backdoor/win7_backdoor_normal_2.csv', 'backdoor')]
-    ddos = [('Dataset_Iot/DDos/win7_DDoS_normal_1.csv', 'DDoS'),
-            ('Dataset_Iot/DDos/win10_DDoS_normal_1.csv', 'DDoS')]
-    dos = [('Dataset_Iot/Dos/win7_DoS_normal_1.csv', 'dos'),
-           ('Dataset_Iot/Dos/win10_DoS_normal_1.csv', 'dos')]
-    infection = [('Dataset_Iot/Infection/win7_injection_normal_1.csv', 'infection'),
-                 ('Dataset_Iot/Infection/win10_injection_normal_1.csv', 'infection')]
-    mitm = [('Dataset_Iot/MITM/win7_MIMT_normal_1.csv', 'mitm'),
-            ('Dataset_Iot/MITM/win10_MITM_normal_1.csv', 'mitm')]
-    password = [('Dataset_Iot/Password/win7_password_normal_1.csv', 'password'),
-                ('Dataset_Iot/Password/win10_password_normal_1.csv', 'password')]
-    runsomware = [('Dataset_Iot/Runsomware/win7_runsomware_normal_1.csv', 'runsomware'),
-                  ('Dataset_Iot/Runsomware/win7_runsomware_normal_2.csv', 'runsomware'),
-                  ('Dataset_Iot/Runsomware/win7_runsomware_normal_3.csv', 'runsomware')]
-    scanning = [('Dataset_Iot/Scanning/win7_scanning_normal_1.csv', 'scanning'),
-                ('Dataset_Iot/Scanning/win10_scanning_normal_1.csv', 'scanning'),
-                ('Dataset_Iot/Scanning/win10_scanning_normal_2.csv', 'scanning'),
-                ('Dataset_Iot/Scanning/win10_scanning_normal_3.csv', 'scanning')]
-    xss = [('Dataset_Iot/XSS/win7_XSS_normal_1.csv', 'xss'),
-           ('Dataset_Iot/XSS/win10_XSS_normal_1.csv', 'xss')]
-    df = [open_csv_file(os.path.join(current_directory, file), label)
-          for base in [backdoor, ddos, dos, infection, mitm, password, runsomware, scanning, xss]
-          for file, label in base]
-    return pd.concat(df, ignore_index=True)
+    attack_files = [('Dataset_Iot/Backdoor/win7_backdoor_normal_1.csv', 'backdoor'),
+                    ('Dataset_Iot/Backdoor/win7_backdoor_normal_2.csv', 'backdoor'),
+                    ('Dataset_Iot/DDos/win7_DDoS_normal_1.csv', 'DDoS'),
+                    ('Dataset_Iot/DDos/win10_DDoS_normal_1.csv', 'DDoS'),
+                    ('Dataset_Iot/Dos/win7_DoS_normal_1.csv', 'dos'),
+                    ('Dataset_Iot/Dos/win10_DoS_normal_1.csv', 'dos'),
+                    ('Dataset_Iot/Infection/win7_injection_normal_1.csv', 'infection'),
+                    ('Dataset_Iot/Infection/win10_injection_normal_1.csv', 'infection'),
+                    ('Dataset_Iot/MITM/win7_MIMT_normal_1.csv', 'mitm'),
+                    ('Dataset_Iot/MITM/win10_MITM_normal_1.csv', 'mitm'),
+                    ('Dataset_Iot/Password/win7_password_normal_1.csv', 'password'),
+                    ('Dataset_Iot/Password/win10_password_normal_1.csv', 'password'),
+                    ('Dataset_Iot/Runsomware/win7_runsomware_normal_1.csv', 'runsomware'),
+                    ('Dataset_Iot/Runsomware/win7_runsomware_normal_2.csv', 'runsomware'),
+                    ('Dataset_Iot/Runsomware/win7_runsomware_normal_3.csv', 'runsomware'),
+                    ('Dataset_Iot/Scanning/win7_scanning_normal_1.csv', 'scanning'),
+                    ('Dataset_Iot/Scanning/win10_scanning_normal_1.csv', 'scanning'),
+                    ('Dataset_Iot/Scanning/win10_scanning_normal_2.csv', 'scanning'),
+                    ('Dataset_Iot/Scanning/win10_scanning_normal_3.csv', 'scanning'),
+                    ('Dataset_Iot/XSS/win7_XSS_normal_1.csv', 'xss'),
+                    ('Dataset_Iot/XSS/win10_XSS_normal_1.csv', 'xss')
+                    ]
+    return combine_data_from_files(attack_files)
 
 
 def clean_null_rows(df):
