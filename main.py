@@ -28,7 +28,6 @@ def preprocess_data():
 
 if __name__ == "__main__":
     df = preprocess_data()
-    df = df.drop(df.columns[0], axis=1)
     cnn = CNN(df)
     cnn.train(10, 24)
    
